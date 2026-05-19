@@ -55,7 +55,7 @@
           <tr>
             <th>存证类型</th>
             <th>文件名称</th>
-            <th>国密哈希</th>
+            <th>文件哈希</th>
             <th>存证时间</th>
             <th>操作</th>
           </tr>
@@ -78,25 +78,59 @@
 <script src="app.js"></script>
 <script>
 let currentHash = "";
+
 function openQrcode(hash) {
   currentHash = hash;
   document.getElementById("qrcodeModal").style.display = "flex";
   const url = `${location.origin}/verify.html?hash=${hash}`;
   document.getElementById("qrcodeContainer").innerHTML = "";
-  new QRCode(document.getElementById("qrcodeContainer"),{text:url,width:200,height:200});
+  new QRCode(document.getElementById("qrcodeContainer"),{
+    text:url,
+    width:200,
+    height:200
+  });
 }
+
 function closeQrcode(){
   document.getElementById("qrcodeModal").style.display = "none";
 }
+
+// 稳定版二维码下载
 function downloadQrcode(){
-  const canvas = document.querySelector("#qrcodeContainer canvas");
-  const a = document.createElement("a");
-  a.download = `存证核验_${currentHash}.png`;
-  a.href = canvas.toDataURL("image/png");
-  a.click();
+  setTimeout(()=>{
+    const container = document.getElementById("qrcodeContainer");
+    const canvas = container.querySelector("canvas");
+    if(!canvas){
+      alert("二维码生成中，请稍后再试");
+      return;
+    }
+    const link = document.createElement("a");
+    link.download = `存证核验_${currentHash.slice(0,16)}.png`;
+    link.href = canvas.toDataURL("image/png");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  },100)
 }
+
+// 导出存证台账JSON
+function exportCertRecords(){
+  const data = localStorage.getItem("certRecords") || "[]";
+  const blob = new Blob([data],{type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "存证记录台账.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 window.onload=async function(){
-  initTheme();initLang();updateNavUserName();syncCloudData();checkUnreadMessage();
+  initTheme();
+  initLang();
+  updateNavUserName();
+  syncCloudData();
+  checkUnreadMessage();
 }
 </script>
 </body>
