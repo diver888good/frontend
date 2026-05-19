@@ -9,7 +9,7 @@ let memberType = localStorage.getItem("memberType") || "free";
 let token = localStorage.getItem("token") || null;
 let currentLang = localStorage.getItem("lang") || "zh";
 
-// ========== 线上接口地址 【你的真实后端地址，无任何短链接】 ==========
+// ========== 你的真实后端地址（无任何短链接，永久有效） ==========
 const API_BASE = "https://shenlian.pythonanywhere.com/api";
 const AES_KEY = "shenlian20250606";
 
@@ -76,7 +76,7 @@ function checkUnreadMessage() {
   dot.style.display = list.some(v => !v.read) ? "block" : "none";
 }
 
-// ==================== 【已修复】存证公开核验 ====================
+// ==================== 【完美匹配后端】存证公开核验 ====================
 async function verifyCert(hash) {
   let dom = document.getElementById("verifyResult");
   if(!hash.trim()){
@@ -85,14 +85,11 @@ async function verifyCert(hash) {
   }
 
   try {
-    const res = await fetch(`${API_BASE}/verify`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ hash: hash.trim() })
-    });
+    // 严格匹配你的后端 GET 接口：/api/verify/哈希值
+    const res = await fetch(`${API_BASE}/verify/${hash.trim()}`);
     const data = await res.json();
 
-    if (data.status === "success") {
+    if (data.exist) {
       dom.innerHTML = `<div class="success verify-result">✅ 核验成功！文件已司法上链，数据不可篡改</div>`;
     } else {
       dom.innerHTML = `<div class="error verify-result">❌ 核验失败 无匹配存证数据</div>`;
