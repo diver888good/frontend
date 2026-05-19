@@ -9,7 +9,6 @@ let memberType = localStorage.getItem("memberType") || "free";
 let token = localStorage.getItem("token") || null;
 let currentLang = localStorage.getItem("lang") || "zh";
 
-// 后端地址（永久固定，无任何短链接）
 const API_BASE = "https://shenlian.pythonanywhere.com/api";
 const AES_KEY = "shenlian20250606";
 
@@ -42,7 +41,7 @@ function initLang() {
   document.title = LANG[currentLang].title;
 }
 
-// 国密SM3
+// 保留你原有的SM3哈希格式（带SM3-前缀）
 function sm3Hash(str) {
   let hash = 1770572381;
   for (let i = 0; i < str.length; i++) {
@@ -53,7 +52,7 @@ function sm3Hash(str) {
 function aesEncrypt(str) { return btoa(encodeURIComponent(str)); }
 function aesDecrypt(str) { return decodeURIComponent(atob(str)); }
 
-// 通知
+// 通知功能
 function requestNotifyPermission() {
   if (!("Notification" in window)) return;
   if (Notification.permission !== "granted") Notification.requestPermission();
@@ -75,9 +74,7 @@ function checkUnreadMessage() {
   dot.style.display = list.some(v => !v.read) ? "block" : "none";
 }
 
-// ==============================================
-// 【终极修复】存证核验（GET请求 + 完美匹配后端）
-// ==============================================
+// 🔥 最终核验函数（完美兼容后端）
 async function verifyCert(hash) {
   const resultDom = document.getElementById("verifyResult");
   const hashVal = hash.trim();
@@ -88,13 +85,12 @@ async function verifyCert(hash) {
   }
 
   try {
-    // 完全匹配后端接口：GET /api/verify/哈希值
-    const response = await fetch(`${API_BASE}/verify/${hashVal}`, {
+    const response = await fetch(`${API_BASE}/verify/${encodeURIComponent(hashVal)}`, {
       method: "GET",
       mode: "cors"
     });
-
     const data = await response.json();
+    
     if (data.exist) {
       resultDom.innerHTML = `<div class="success">✅ 核验成功！文件已上链存证，不可篡改</div>`;
     } else {
@@ -173,7 +169,7 @@ function updateNavUserName() {
   if(dom&&userInfo) dom.innerText=userInfo.username;
 }
 
-// 存证数据
+// 存证数据同步
 async function syncCloudData() {
   if(!userInfo) return;
   const res = await fetch(`${API_BASE}/cert/list/${userInfo.username}`).then(r=>r.json());
@@ -194,7 +190,7 @@ function loadLocalCertRecords() {
       <td><button class="btn btn-outline" onclick="openQrcode('${item.hash}')">核验二维码</button></td>
     </tr>`;
   });
-  dom.innerHTML = html || `<tr><td colspan="5" style="text-align:center;">暂无存证记录</td></tr>`;
+  dom.innerHTML = html || `<tr><td colspan="5" style="text-align:center;">暂无存证记录</tr>`;
 }
 
 // 工具函数
