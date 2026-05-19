@@ -9,9 +9,8 @@ let memberType = localStorage.getItem("memberType") || "free";
 let token = localStorage.getItem("token") || null;
 let currentLang = localStorage.getItem("lang") || "zh";
 
-// ========== 线上接口地址 【仅修改此处PythonAnywhere域名即可】 ==========
-// 格式：https://你的PA二级域名.pythonanywhere.com/api
-const API_BASE = "https://shenlian-demo.pythonanywhere.com/api";
+// ========== 线上接口地址 【已修改为你的真实后端地址】 ==========
+const API_BASE = "https://shenlian.pythonanywhere.com/api";
 const AES_KEY = "shenlian20250606";
 
 window.onload = async function () {
@@ -23,7 +22,6 @@ window.onload = async function () {
   syncCloudData();
   checkUnreadMessage();
   autoBackupData();
-  requestNotifyPermission();
   window.onerror = (msg) => { addLog(`系统异常：${msg}`); };
 };
 
