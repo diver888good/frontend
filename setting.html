@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系统全局设置 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="backup.html">数据备份</a>
+      <a href="setting.html" class="active">系统设置</a>
+      <a href="user_center.html">个人中心</a>
+    </div>
+    <div class="tool-bar">
+      <button class="tool-btn" onclick="toggleTheme()">🌙 明暗切换</button>
+      <button class="tool-btn" onclick="toggleLang()">🌐 语言切换</button>
+    </div>
+  </div>
+</nav>
+
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>⚙️ 账号与系统配置</h2>
+      <div class="form-group">
+        <label>修改登录密码</label>
+        <input type="password" class="form-control" id="oldPwd" placeholder="输入原登录密码">
+        <input type="password" class="form-control" id="newPwd" placeholder="输入新密码">
+        <input type="password" class="form-control" id="rePwd" placeholder="再次确认新密码">
+        <button class="btn btn-primary btn-block" style="margin-top:10px;" onclick="editUserPassword()">提交修改</button>
+      </div>
+
+      <div class="form-group" style="margin-top:30px;">
+        <label>浏览器消息推送权限</label>
+        <p>当前状态：<span id="notifyStatus">未开启</span></p>
+        <button class="btn btn-outline" onclick="requestNotifyPermission()">开启桌面消息推送</button>
+      </div>
+
+      <div class="form-group" style="margin-top:30px;">
+        <label>本地缓存清理</label>
+        <p>清理本地登录记录、页面缓存、消息记录</p>
+        <button class="btn btn-danger btn-block" onclick="clearLocalCacheData()">一键清理缓存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+window.onload = function(){
+  initTheme();
+  initLang();
+  updateNavUserName();
+  if(Notification.permission === "granted"){
+    document.getElementById("notifyStatus").innerText = "已开启";
+  }
+}
+
+async function editUserPassword(){
+  requireLogin();
+  let old = document.getElementById("oldPwd").value.trim();
+  let newpwd = document.getElementById("newPwd").value.trim();
+  let repwd = document.getElementById("rePwd").value.trim();
+  if(newpwd !== repwd){
+    alert("两次输入新密码不一致，请重新填写");
+    return;
+  }
+  let res = await fetch(`${API_BASE}/password`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      username:userInfo.username,
+      oldPwd:old,
+      newPwd:newpwd
+    })
+  }).then(r=>r.json());
+  alert(res.msg);
+}
+
+function clearLocalCacheData(){
+  if(confirm("确定清理本地缓存数据？云端存证数据不会丢失")){
+    localStorage.removeItem("messageList");
+    localStorage.removeItem("certRecords");
+    alert("本地缓存清理完成");
+    location.reload();
+  }
+}
+</script>
+</body>
+</html>

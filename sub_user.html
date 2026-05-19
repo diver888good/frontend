@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企业子账号管理 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="pay.html">会员充值</a>
+      <a href="sub_user.html" class="active">子账号管理</a>
+      <a href="monitor.html">侵权监测</a>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>👥 企业多级子账号管理</h2>
+      <p class="warning">仅企业版会员可用</p>
+      <input class="form-control" placeholder="新建子账号用户名" id="subName">
+      <button class="btn btn-primary btn-block" style="margin-top:15px;" onclick="addSubUser()">创建子账号</button>
+      <p style="margin-top:15px;">默认密码：123456</p>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+async function addSubUser(){
+  requireLogin();
+  if(memberType!="enterprise"){
+    alert("仅企业版可创建子账号");
+    return;
+  }
+  let name = document.getElementById("subName").value.trim();
+  if(!name){alert("请输入子账号名称");return;}
+  await fetch(`${API_BASE}/sub/add`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({username:userInfo.username,subname:name})
+  });
+  alert("子账号创建成功，默认密码123456");
+}
+</script>
+</body>
+</html>

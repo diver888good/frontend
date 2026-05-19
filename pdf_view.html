@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF法律文档全屏预览 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="pdf_view.html" class="active">PDF文档预览</a>
+      <a href="user_center.html">个人中心</a>
+    </div>
+  </div>
+</nav>
+
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>📄 法律合同PDF全屏预览</h2>
+      <input type="file" accept=".pdf" class="form-control" id="pdfFileChoose">
+      <div style="margin-top:20px;">
+        <iframe class="pdf-view" id="pdfPreviewIframe" src=""></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+document.getElementById("pdfFileChoose").addEventListener("change",function(e){
+  let file = e.target.files[0];
+  if(!file) return;
+  document.getElementById("pdfPreviewIframe").src = URL.createObjectURL(file);
+})
+</script>
+</body>
+</html>

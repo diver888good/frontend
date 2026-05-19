@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>消息中心 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .msg-item {padding:15px;border-bottom:1px solid var(--border);border-radius:8px;margin:10px 0;}
+    .msg-item.unread {background:rgba(22,93,255,0.08);border-left:4px solid var(--primary);}
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="message.html" class="active">消息中心</a>
+      <a href="backup.html">数据备份</a>
+      <a href="setting.html">系统设置</a>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>🔔 系统消息通知中心</h2>
+      <div style="display:flex;gap:10px;margin:15px 0;">
+        <button class="btn btn-outline" onclick="markAllRead()">全部已读</button>
+        <button class="btn btn-danger" onclick="clearAllMsg()">清空消息</button>
+      </div>
+      <div id="msgList"></div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+function loadMsgList(){
+  let list = JSON.parse(localStorage.getItem("messageList")||"[]");
+  let dom = document.getElementById("msgList");
+  if(list.length===0){
+    dom.innerHTML="<p class='success'>暂无系统消息</p>";
+    return;
+  }
+  let html = "";
+  list.forEach(item=>{
+    html += `
+    <div class="msg-item ${item.read?'':'unread'}" onclick="singleRead(${item.id})">
+      <h4>${item.title}</h4>
+      <p>${item.content}</p>
+      <p style="font-size:12px;color:var(--text-secondary)">${item.time}</p>
+    </div>
+    `;
+  });
+  dom.innerHTML=html;
+  checkUnreadMessage();
+}
+function singleRead(id){
+  let list = JSON.parse(localStorage.getItem("messageList")||"[]");
+  list = list.map(v=>v.id===id?{...v,read:true}:v);
+  localStorage.setItem("messageList",JSON.stringify(list));
+  loadMsgList();
+}
+function markAllRead(){
+  let list = JSON.parse(localStorage.getItem("messageList")||"[]");
+  list = list.map(v=>{return {...v,read:true}});
+  localStorage.setItem("messageList",JSON.stringify(list));
+  loadMsgList();
+}
+function clearAllMsg(){
+  if(confirm("确定清空所有消息？")){
+    localStorage.removeItem("messageList");
+    loadMsgList();
+  }
+}
+window.onload=function(){
+  initTheme();initLang();updateNavUserName();loadMsgList();
+}
+</script>
+</body>
+</html>

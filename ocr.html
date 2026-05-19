@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCR文字识别 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="ocr.html" class="active">OCR识别</a>
+      <a href="signature.html">电子签章</a>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>📷 图片OCR文字智能识别</h2>
+      <p class="warning">免费版每日有限次数</p>
+      <input type="file" accept="image/*" class="form-control" id="ocrImg">
+      <textarea class="form-control" rows="8" id="ocrResult" placeholder="识别结果将展示在此处" readonly></textarea>
+      <button class="btn btn-primary btn-block" style="margin-top:15px;" onclick="startOcr()">开始识别</button>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+function startOcr(){
+  requireLogin();
+  if(!checkPermission("ocr")){
+    alert("今日OCR识别次数已用完");
+    return;
+  }
+  document.getElementById("ocrResult").value="正在智能识别文字内容...";
+  setTimeout(()=>{
+    document.getElementById("ocrResult").value="模拟识别完成，正式环境对接官方OCR接口";
+    recordUsage("ocr");
+  },1500);
+}
+</script>
+</body>
+</html>

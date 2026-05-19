@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>区块链浏览器 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="verify.html">核验</a>
+      <a href="blockchain.html" class="active">区块链</a>
+      <a href="help.html">帮助</a>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>⛓️ 司法联盟链区块浏览器</h2>
+      <p class="success">✅ 链上数据永久不可篡改，具备完整司法采信效力</p>
+      <div id="chainList"></div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+async function loadChainData(){
+  let res = await fetch(`${API_BASE}/blockchain/list`).then(r=>r.json());
+  let dom = document.getElementById("chainList");
+  let html = "";
+  if(res.list.length===0){
+    html = `<p class="warning">暂无链上存证数据</p>`;
+  }else{
+    res.list.forEach(item=>{
+      html += `
+      <div class="blockchain-item">
+        <h4>✅ 成功上链存证</h4>
+        <p>文件名称：${item.file}</p>
+        <p>国密哈希：${item.hash}</p>
+        <p>区块交易ID：${item.tx}</p>
+        <p>存证时间：${item.time}</p>
+      </div>
+      `;
+    });
+  }
+  dom.innerHTML = html;
+}
+window.onload=function(){
+  initTheme();loadChainData();
+}
+</script>
+</body>
+</html>

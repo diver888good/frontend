@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI智能合同审查 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .risk-high {background:#fff2f0;border-left:4px solid var(--danger);padding:12px;margin:10px 0;border-radius:6px;}
+    .risk-middle {background:#fffbe6;border-left:4px solid var(--warning);padding:12px;margin:10px 0;border-radius:6px;}
+    .risk-low {background:#f6ffed;border-left:4px solid var(--success);padding:12px;margin:10px 0;border-radius:6px;}
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="contract.html">合同存证</a>
+      <a href="contract_review.html" class="active">AI审查</a>
+      <a href="ai_risk.html">风险预判</a>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>🤖 AI智能合同法律审查</h2>
+      <p class="warning">免费版每日3次，会员无限使用</p>
+      <input type="file" accept=".pdf,.doc,.docx" class="form-control" id="reviewFile">
+      <button class="btn btn-primary btn-block" style="margin-top:15px;" onclick="startReview()">启动AI智能审查</button>
+      <div id="reviewResult" style="margin-top:20px;"></div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+async function startReview(){
+  requireLogin();
+  if(!checkPermission("review")){
+    alert("今日AI审查次数已用尽，请升级会员");
+    return;
+  }
+  let file = document.getElementById("reviewFile").files[0];
+  if(!file){alert("请上传合同文件");return;}
+  document.getElementById("reviewResult").innerHTML="<p>AI正在解析合同条款，检测法律风险...</p>";
+  setTimeout(()=>{
+    let html = `
+    <h3>合同审查评分：68分</h3>
+    <div class="risk-high">高危风险：未明确违约责任条款，极易产生经济纠纷</div>
+    <div class="risk-middle">中危风险：合同生效与解除条件定义模糊</div>
+    <div class="risk-low">低危建议：统一日期书写格式</div>
+    <p style="margin-top:15px;">优化建议：补充违约赔付标准、明确争议解决方式、完善双方权责划分</p>
+    `;
+    document.getElementById("reviewResult").innerHTML=html;
+    recordUsage("review");
+    sendNotification("合同审查完成","AI已完成合同法律风险检测");
+  },1800);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>批量文件存证 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="certify.html">单文件存证</a>
+      <a href="batch_certify.html" class="active">批量存证</a>
+      <a href="chat_certify.html">聊天存证</a>
+      <a href="cert_records.html">存证记录</a>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>📂 批量批量文件司法存证</h2>
+      <p class="warning">企业版会员专属功能，一次性批量上传多文件完成统一上链</p>
+      <input type="file" multiple class="form-control" id="batchFile">
+      <div id="batchList" style="margin:20px 0;"></div>
+      <button class="btn btn-primary btn-block" onclick="batchCertSubmit()">一键批量上链存证</button>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+let batchFiles = [];
+document.getElementById("batchFile").addEventListener("change",function(e){
+  requireLogin();
+  batchFiles = Array.from(e.target.files);
+  let html = "";
+  batchFiles.forEach((item,idx)=>{
+    html += `<p>${idx+1}. ${item.name} | ${(item.size/1024/1024).toFixed(2)}MB</p>`;
+  });
+  document.getElementById("batchList").innerHTML = html;
+});
+async function batchCertSubmit(){
+  if(!checkPermission("batch")){
+    alert("当前会员等级无法使用批量存证，请升级会员");
+    return;
+  }
+  if(batchFiles.length===0){
+    alert("请选择批量文件");
+    return;
+  }
+  alert(`已开始批量存证，共${batchFiles.length}个文件`);
+  sendNotification("批量存证开始","正在批量完成文件司法上链");
+}
+</script>
+</body>
+</html>

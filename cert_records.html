@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>存证记录 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
+  <style>
+    .qrcode-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .qrcode-box {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="certify.html">文件存证</a>
+      <a href="cert_records.html" class="active">记录</a>
+      <a href="stat.html">统计</a>
+      <a href="verify.html">核验</a>
+    </div>
+    <div class="tool-bar">
+      <button class="tool-btn" onclick="toggleTheme()">🌙</button>
+      <button class="tool-btn" onclick="toggleLang()">🌐</button>
+      <a href="message.html" class="msg-badge"><span class="dot"></span>消息</a>
+    </div>
+  </div>
+</nav>
+
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>📋 我的存证记录</h2>
+      <button class="btn btn-outline" onclick="exportCertRecords()">导出台账</button>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>存证类型</th>
+            <th>文件名称</th>
+            <th>国密哈希</th>
+            <th>存证时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="certTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="qrcode-modal" id="qrcodeModal">
+  <div class="qrcode-box">
+    <h3>存证核验二维码</h3>
+    <div id="qrcodeContainer"></div>
+    <button class="btn btn-primary" onclick="downloadQrcode()">下载二维码</button>
+    <button class="btn btn-outline" onclick="closeQrcode()">关闭</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+let currentHash = "";
+function openQrcode(hash) {
+  currentHash = hash;
+  document.getElementById("qrcodeModal").style.display = "flex";
+  const url = `${location.origin}/verify.html?hash=${hash}`;
+  document.getElementById("qrcodeContainer").innerHTML = "";
+  new QRCode(document.getElementById("qrcodeContainer"),{text:url,width:200,height:200});
+}
+function closeQrcode(){
+  document.getElementById("qrcodeModal").style.display = "none";
+}
+function downloadQrcode(){
+  const canvas = document.querySelector("#qrcodeContainer canvas");
+  const a = document.createElement("a");
+  a.download = `存证核验_${currentHash}.png`;
+  a.href = canvas.toDataURL("image/png");
+  a.click();
+}
+window.onload=async function(){
+  initTheme();initLang();updateNavUserName();syncCloudData();checkUnreadMessage();
+}
+</script>
+</body>
+</html>

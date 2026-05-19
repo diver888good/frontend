@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>电子手写签章 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="signature.html" class="active">电子签章</a>
+      <a href="real_name.html">实名认证</a>
+      <a href="certificate.html">存证证书</a>
+      <a href="notary.html">司法公证</a>
+      <a href="ocr.html">OCR识别</a>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>✍️ 手写电子签章签署</h2>
+      <p class="warning">专业版及以上会员可用</p>
+      <canvas id="signCanvas" width="600" height="300" style="border:1px solid var(--border);"></canvas>
+      <div style="margin-top:15px;display:flex;gap:10px;">
+        <button class="btn btn-primary" onclick="clearSign()">清空重写</button>
+        <button class="btn btn-success" onclick="saveSign()">保存电子签章</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+window.onload=function(){
+  initTheme();requireLogin();
+  if(!checkPermission("signature")){
+    alert("当前会员无法使用电子签章，请升级会员");
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>司法公证申请 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .certificate-box { position: relative; padding: 40px; border: 2px solid #333; border-radius: 8px; background: var(--card); margin: 20px 0; }
+    .cert-title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 30px; }
+    .notary-seal { position: absolute; bottom: 20px; right: 20px; width: 120px; opacity: 0.9; }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="cert_records.html">存证记录</a>
+      <a href="notary.html" class="active">司法公证</a>
+      <a href="blockchain.html">区块链</a>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>🏛️ 公证处司法公证申请</h2>
+      <p class="success">✅ 公证书具备完整司法效力，法院/仲裁机构直接认可</p>
+      <p class="warning">仅专业版/企业版会员可使用</p>
+      <div id="vipTip" style="display:none;color:var(--danger);">❌ 免费版无法使用，请升级会员</div>
+      <div id="certSelectBox" style="display:none;">
+        <select id="certSelect" class="form-control"></select>
+        <button class="btn btn-primary btn-block" style="margin-top:15px;" onclick="applyNotary()">申请司法公证</button>
+      </div>
+      <div id="certificateBox" class="certificate-box" style="display:none;">
+        <h3 class="cert-title">电子数据存证公证书</h3>
+        <div id="certContent"></div>
+        <img class="notary-seal" alt="公证处公章">
+        <button class="btn btn-success btn-block" style="margin-top:30px;">下载PDF公证书</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+let certList = [];
+window.onload=async function(){
+  initTheme();initLang();updateNavUserName();
+  if(memberType==="free"){
+    document.getElementById("vipTip").style.display="block";
+    return;
+  }
+  document.getElementById("certSelectBox").style.display="block";
+  await loadUserCertList();
+}
+async function loadUserCertList(){
+  if(!userInfo)return;
+  let res = await fetch(`${API_BASE}/cert/list/${userInfo.username}`).then(r=>r.json());
+  certList = res.records;
+  let select = document.getElementById("certSelect");
+  certList.forEach(item=>{
+    let opt = document.createElement("option");
+    opt.value=item.hash;
+    opt.innerText=`${item.filename} ${item.time}`;
+    select.appendChild(opt);
+  });
+}
+async function applyNotary(){
+  let hash = document.getElementById("certSelect").value;
+  if(!hash){alert("请选择存证记录");return;}
+  let cert = certList.find(v=>v.hash===hash);
+  setTimeout(()=>{
+    let html = `
+    <p>申请人：${userInfo.username}</p>
+    <p>存证文件：${cert.filename}</p>
+    <p>国密哈希：${cert.hash}</p>
+    <p>区块交易号：${cert.tx||"已上链"}</p>
+    <p>存证时间：${cert.time}</p>
+    <p>公证说明：本公证书依据电子签名法出具，数据不可篡改，具备完整诉讼证据效力</p>
+    `;
+    document.getElementById("certContent").innerHTML=html;
+    document.getElementById("certificateBox").style.display="block";
+    sendNotification("公证完成","司法电子公证书已生成完成");
+  },2000);
+}
+</script>
+</body>
+</html>

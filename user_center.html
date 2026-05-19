@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人中心 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .user-info-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);}
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="user_center.html" class="active">个人中心</a>
+      <a href="setting.html">系统设置</a>
+    </div>
+    <div class="tool-bar">
+      <span id="userName"></span>
+      <button class="tool-btn" onclick="userLogout()">退出登录</button>
+    </div>
+  </div>
+</nav>
+
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>👤 个人账号信息中心</h2>
+      <div class="user-info-row">
+        <span>登录账号</span>
+        <span id="centerUserName"></span>
+      </div>
+      <div class="user-info-row">
+        <span>当前会员等级</span>
+        <span id="centerMemberLevel"></span>
+      </div>
+      <div class="user-info-row">
+        <span>今日剩余存证次数</span>
+        <span id="remainCertNum"></span>
+      </div>
+      <div class="user-info-row">
+        <span>今日剩余AI审查次数</span>
+        <span id="remainReviewNum"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>常用功能快捷入口</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px;">
+        <a href="certify.html" class="btn btn-primary">文件司法存证</a>
+        <a href="cert_records.html" class="btn btn-outline">查看存证记录</a>
+        <a href="pay.html" class="btn btn-success">升级会员权限</a>
+        <a href="help.html" class="btn btn-warning">使用帮助文档</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+window.onload = function(){
+  initTheme();
+  initLang();
+  requireLogin();
+  updateNavUserName();
+
+  document.getElementById("centerUserName").innerText = userInfo.username;
+  let memberTextMap = {
+    free:"免费体验版",
+    pro:"专业尊享版",
+    enterprise:"企业全能版"
+  };
+  document.getElementById("centerMemberLevel").innerText = memberTextMap[memberType];
+
+  let totalCert = MEMBER_LIMITS[memberType].certify;
+  let usedCert = parseInt(localStorage.getItem("today_certify")||0);
+  document.getElementById("remainCertNum").innerText = totalCert - usedCert;
+
+  let totalReview = MEMBER_LIMITS[memberType].review;
+  let usedReview = parseInt(localStorage.getItem("today_review")||0);
+  document.getElementById("remainReviewNum").innerText = totalReview - usedReview;
+}
+</script>
+</body>
+</html>

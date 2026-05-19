@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>首页 - 深链区块链司法存证系统</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">首页</a>
+      <a href="certify.html">文件存证</a>
+      <a href="cert_records.html">存证记录</a>
+      <a href="verify.html">公开核验</a>
+      <a href="blockchain.html">区块链浏览器</a>
+    </div>
+    <div class="tool-bar">
+      <button class="tool-btn" onclick="toggleTheme()">🌙</button>
+      <button class="tool-btn" onclick="toggleLang()">🌐</button>
+      <a href="message.html" class="msg-badge"><span class="dot"></span>消息</a>
+      <span id="userName"></span>
+      <button class="tool-btn" onclick="userLogout()">退出</button>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>🏛️ 区块链司法全生态存证平台</h2>
+      <p class="success" style="margin:15px 0;">
+        基于国产司法联盟链搭建，支持文件存证、电子签章、AI合同审查、司法公证、证据链固化一站式法律服务平台
+      </p>
+      <div class="grid-stat">
+        <div class="stat-item"><h3>文件存证</h3><p>单文件/批量/聊天记录全类型存证</p></div>
+        <div class="stat-item"><h3>司法核验</h3><p>全网公开哈希核验，法院直接采信</p></div>
+        <div class="stat-item"><h3>会员服务</h3><p>免费/专业/企业三档权限划分</p></div>
+      </div>
+      <div style="margin-top:30px;text-align:center;">
+        <a href="certify.html" class="btn btn-primary">立即开始存证</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

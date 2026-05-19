@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>会员开通支付中心 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="stat.html">数据统计</a>
+      <a href="pay.html" class="active">会员充值</a>
+      <a href="sub_user.html">子账号管理</a>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>💳 会员权益开通中心</h2>
+      <div class="pay-card" style="border:1px solid var(--border);padding:20px;border-radius:10px;margin:15px 0;">
+        <h3>专业版会员 99元/年</h3>
+        <p>无限存证、无限AI审查、解锁OCR、电子签章</p>
+        <button class="btn btn-primary" style="margin-top:10px;" onclick="openVip('pro')">立即开通</button>
+      </div>
+      <div class="pay-card" style="border:1px solid var(--border);padding:20px;border-radius:10px;margin:15px 0;">
+        <h3>企业版会员 399元/年</h3>
+        <p>全部功能+子账号管理+司法公证+侵权监测</p>
+        <button class="btn btn-success" style="margin-top:10px;" onclick="openVip('enterprise')">立即开通</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+async function openVip(level){
+  requireLogin();
+  let confirmPay = confirm("确认开通对应会员（沙箱测试，无真实扣款）");
+  if(!confirmPay)return;
+  await fetch(`${API_BASE}/member/active`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({username:userInfo.username,level:level})
+  });
+  localStorage.setItem("memberType",level);
+  sendNotification("会员开通成功","已解锁全部对应权限");
+  alert("✅ 会员开通成功，权限立即生效");
+  location.reload();
+}
+</script>
+</body>
+</html>

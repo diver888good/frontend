@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>找回密码 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <div class="card login-box">
+    <h2 style="text-align:center;margin-bottom:20px;">🔑 账号密码找回</h2>
+    <input class="form-control" id="findUser" placeholder="输入注册用户名">
+    <input class="form-control" id="findEmail" placeholder="输入注册时填写的邮箱">
+    <input class="form-control" id="findNewPwd" type="password" placeholder="设置新登录密码">
+    <input class="form-control" id="findRePwd" type="password" placeholder="再次确认新密码">
+    <button class="btn btn-primary btn-block" style="margin-top:10px;" onclick="resetUserPwd()">一键重置密码</button>
+    <a href="login.html" class="btn btn-outline btn-block" style="margin-top:10px;text-align:center;text-decoration:none;">返回登录页面</a>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+async function resetUserPwd(){
+  let username = document.getElementById("findUser").value.trim();
+  let email = document.getElementById("findEmail").value.trim();
+  let newpwd = document.getElementById("findNewPwd").value.trim();
+  let repwd = document.getElementById("findRePwd").value.trim();
+
+  if(!username || !email || !newpwd){
+    alert("请填写完整信息");
+    return;
+  }
+  if(newpwd !== repwd){
+    alert("两次新密码输入不一致");
+    return;
+  }
+
+  let res = await fetch(`${API_BASE}/findpwd`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      username:username,
+      email:email,
+      newpwd:newpwd
+    })
+  }).then(r=>r.json());
+  alert(res.msg);
+  if(res.code === 200){
+    location.href="login.html";
+  }
+}
+</script>
+</body>
+</html>

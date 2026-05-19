@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>账号注册 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <div class="card login-box">
+    <h2 style="text-align:center;margin-bottom:20px;">📝 新用户注册</h2>
+    <input class="form-control" id="regUser" placeholder="设置登录用户名">
+    <input class="form-control" id="regPwd" type="password" placeholder="设置登录密码">
+    <input class="form-control" id="regEmail" placeholder="填写常用邮箱">
+    <button class="btn btn-primary btn-block" style="margin-top:10px;" onclick="userRegister(regUser.value,regPwd.value,regEmail.value)">完成注册</button>
+    <a href="login.html" class="btn btn-outline btn-block" style="margin-top:10px;text-align:center;text-decoration:none;">已有账号去登录</a>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

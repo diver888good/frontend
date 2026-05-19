@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>聊天记录存证 - 深链存证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">深链存证</a>
+    <div class="nav-links">
+      <a href="certify.html">单文件存证</a>
+      <a href="batch_certify.html">批量存证</a>
+      <a href="chat_certify.html" class="active">聊天存证</a>
+      <a href="cert_records.html">存证记录</a>
+    </div>
+  </div>
+</nav>
+<div class="main-content">
+  <div class="container">
+    <div class="card">
+      <h2>💬 社交聊天记录司法存证</h2>
+      <p class="success">适用于商务洽谈、借贷沟通、劳务协商等取证场景</p>
+      <textarea class="form-control" rows="10" id="chatContent" placeholder="粘贴完整聊天记录内容"></textarea>
+      <button class="btn btn-primary btn-block" style="margin-top:15px;" onclick="chatCert()">提交聊天记录上链存证</button>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+async function chatCert(){
+  requireLogin();
+  let content = document.getElementById("chatContent").value.trim();
+  if(!content){
+    alert("请粘贴聊天记录内容");
+    return;
+  }
+  let hash = sm3Hash(content);
+  await fetch(`${API_BASE}/cert/add`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      username:userInfo.username,
+      type:"聊天记录存证",
+      filename:"聊天记录_"+new Date().getTime(),
+      hash:hash
+    })
+  });
+  recordUsage("certify");
+  sendNotification("聊天记录存证成功","聊天内容已固化至司法联盟链");
+  alert("✅ 聊天记录存证完成，可作为合法电子证据");
+}
+</script>
+</body>
+</html>
