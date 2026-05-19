@@ -9,7 +9,7 @@ let memberType = localStorage.getItem("memberType") || "free";
 let token = localStorage.getItem("token") || null;
 let currentLang = localStorage.getItem("lang") || "zh";
 
-// ========== 线上接口地址 【已修改为你的真实后端地址】 ==========
+// ========== 线上接口地址 【你的真实后端地址，无任何短链接】 ==========
 const API_BASE = "https://shenlian.pythonanywhere.com/api";
 const AES_KEY = "shenlian20250606";
 
@@ -76,14 +76,30 @@ function checkUnreadMessage() {
   dot.style.display = list.some(v => !v.read) ? "block" : "none";
 }
 
-// 存证公开核验
+// ==================== 【已修复】存证公开核验 ====================
 async function verifyCert(hash) {
-  let res = await fetch(`${API_BASE}/verify/${hash}`).then(r => r.json());
   let dom = document.getElementById("verifyResult");
-  if (res.exist) {
-    dom.innerHTML = `<div class="success verify-result">✅ 核验成功 文件已司法上链 ${res.on_chain ? "<br>✅ 已录入联盟链存证库" : "<br>⚠️ 本地留存存证"}</div>`;
-  } else {
-    dom.innerHTML = `<div class="error verify-result">❌ 核验失败 无匹配存证数据</div>`;
+  if(!hash.trim()){
+    dom.innerHTML = `<div class="error verify-result">❌ 请输入哈希值！</div>`;
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ hash: hash.trim() })
+    });
+    const data = await res.json();
+
+    if (data.status === "success") {
+      dom.innerHTML = `<div class="success verify-result">✅ 核验成功！文件已司法上链，数据不可篡改</div>`;
+    } else {
+      dom.innerHTML = `<div class="error verify-result">❌ 核验失败 无匹配存证数据</div>`;
+    }
+  } catch (err) {
+    dom.innerHTML = `<div class="error verify-result">❌ 网络异常，请重试！</div>`;
+    console.error(err);
   }
 }
 
